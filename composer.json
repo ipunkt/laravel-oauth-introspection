@@ -18,7 +18,8 @@
 	"require": {
 		"php": "^7.0",
 		"guzzlehttp/guzzle": "~6.0",
-		"laravel/passport": "~1.0"
+		"laravel/passport": "~1.0",
+		"ipunkt/laravel-package-manager": "^0.1.1"
 	},
 	"autoload": {
 		"psr-4": {
