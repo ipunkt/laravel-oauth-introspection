@@ -10,11 +10,13 @@ class OAuthIntrospectionServiceProvider extends PackageServiceProvider implement
     /**
      * returns routes.php file (absolute path)
      *
-     * @return string
+     * @return array|string[]
      */
-    public function routesFile()
+    public function routesFiles()
     {
-        return __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'routes' . DIRECTORY_SEPARATOR . 'web.php';
+        return [
+            __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'routes' . DIRECTORY_SEPARATOR . 'web.php'
+        ];
     }
 
     /**
