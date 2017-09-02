@@ -18,7 +18,7 @@
 	"require": {
 		"php": "^7.0",
 		"guzzlehttp/guzzle": "~6.0",
-		"laravel/passport": "~1.0",
+		"laravel/passport": "~1.0|~2.0|~3.0|~4.0",
 		"ipunkt/laravel-package-manager": "^0.2.0"
 	},
 	"autoload": {
@@ -27,5 +27,12 @@
 		}
 	},
 	"minimum-stability": "dev",
-	"prefer-stable": true
+	"prefer-stable": true,
+	"extra": {
+		"laravel": {
+			"providers": [
+				"Ipunkt\\Laravel\\OAuthIntrospection\\OAuthIntrospectionServiceProvider"
+			]
+		}
+	}
 }
