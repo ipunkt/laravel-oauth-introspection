@@ -18,20 +18,25 @@
 	"require": {
 		"php": "^7.0",
 		"guzzlehttp/guzzle": "~6.0",
-		"laravel/passport": "~1.0|~2.0|~3.0|~4.0",
-		"ipunkt/laravel-package-manager": "^0.2.0"
+		"ipunkt/laravel-package-manager": "^1.0",
+		"laravel/passport": "~1.0|~2.0|~3.0|~4.0"
 	},
 	"autoload": {
 		"psr-4": {
 			"Ipunkt\\Laravel\\OAuthIntrospection\\": "src/"
 		}
 	},
+	"config": {
+		"preferred-install": "dist",
+		"sort-packages": true,
+		"optimize-autoloader": true
+	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"extra": {
 		"laravel": {
 			"providers": [
-				"Ipunkt\\Laravel\\OAuthIntrospection\\OAuthIntrospectionServiceProvider"
+				"Ipunkt\\Laravel\\OAuthIntrospection\\Providers\\OAuthIntrospectionServiceProvider"
 			]
 		}
 	}
