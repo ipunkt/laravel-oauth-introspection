@@ -19,7 +19,7 @@ Just install the package on your authorization server
 
 and add the Service Provider in your `config/app.php`
 
-	\Ipunkt\Laravel\OAuthIntrospection\OAuthIntrospectionServiceProvider::class,
+	\Ipunkt\Laravel\OAuthIntrospection\Providers\OAuthIntrospectionServiceProvider::class,
 
 ## Official Documentation
 
