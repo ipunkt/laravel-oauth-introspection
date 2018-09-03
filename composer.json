@@ -1,5 +1,5 @@
 {
-	"name": "ipunkt/laravel-oauth-introspection",
+	"name": "aeoss/laravel-oauth-introspection",
 	"description": "OAuth 2.0 Token Introspection implementation for extending Laravel Passport (RFC 7662)",
 	"keywords": [
 		"laravel",
@@ -13,6 +13,10 @@
 		{
 			"name": "Robert Kummer",
 			"email": "r.kummer@ipunkt.biz"
+		},
+		{
+			"name": "Scott Plunkett",
+			"email": "splunkett@lavra.io"
 		}
 	],
 	"require": {
@@ -23,7 +27,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Ipunkt\\Laravel\\OAuthIntrospection\\": "src/"
+			"Aeoss\\Laravel\\OAuthIntrospection\\": "src/"
 		}
 	},
 	"config": {
@@ -36,7 +40,7 @@
 	"extra": {
 		"laravel": {
 			"providers": [
-				"Ipunkt\\Laravel\\OAuthIntrospection\\Providers\\OAuthIntrospectionServiceProvider"
+				"Aeoss\\Laravel\\OAuthIntrospection\\Providers\\OAuthIntrospectionServiceProvider"
 			]
 		}
 	}
