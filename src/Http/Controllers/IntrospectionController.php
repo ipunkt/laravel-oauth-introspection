@@ -69,48 +69,42 @@ class IntrospectionController
 	{
 		try {
 			$this->resourceServer->validateAuthenticatedRequest($request);
+        } catch (OAuthServerException $oAuthServerException) {
+            return $oAuthServerException->generateHttpResponse(new Psr7Response);
+        }
 
-			if (array_get($request->getParsedBody(), 'token_type_hint', 'access_token') !== 'access_token') {
-				//  unsupported introspection
-				return $this->notActiveResponse();
-			}
+        if (array_get($request->getParsedBody(), 'token_type_hint', 'access_token') !== 'access_token') {
+            //  unsupported introspection
+            return $this->notActiveResponse();
+        }
 
-			$accessToken = array_get($request->getParsedBody(), 'token');
-			if ($accessToken === null) {
-				return $this->notActiveResponse();
-			}
+        $accessToken = array_get($request->getParsedBody(), 'token');
+        if ($accessToken === null) {
+            return $this->notActiveResponse();
+        }
 
-			$token = $this->jwt->parse($accessToken);
-			if (!$this->verifyToken($token)) {
-				return $this->errorResponse([
-					'error' => [
-						'title' => 'Token invalid'
-					]
-				]);
-			}
+        $token = $this->jwt->parse($accessToken);
+        if (!$this->verifyToken($token)) {
+            return $this->notActiveResponse();
+        }
 
-			/** @var string $userModel */
-			$userModel = config('auth.providers.users.model');
-			$user = (new $userModel)->findOrFail($token->getClaim('sub'));
+        /** @var string $userModel */
+        $userModel = config('auth.providers.users.model');
+        $user = (new $userModel)->findOrFail($token->getClaim('sub'));
 
-			return $this->jsonResponse([
-				'active' => true,
-				'scope' => trim(implode(' ', (array)$token->getClaim('scopes', []))),
-				'client_id' => intval($token->getClaim('aud')),
-				'username' => $user->email,
-				'token_type' => 'access_token',
-				'exp' => intval($token->getClaim('exp')),
-				'iat' => intval($token->getClaim('iat')),
-				'nbf' => intval($token->getClaim('nbf')),
-				'sub' => intval($token->getClaim('sub')),
-				'aud' => intval($token->getClaim('aud')),
-				'jti' => $token->getClaim('jti'),
-			]);
-		} catch (OAuthServerException $oAuthServerException) {
-			return $oAuthServerException->generateHttpResponse(new Psr7Response);
-		} catch (\Exception $exception) {
-			return $this->exceptionResponse($exception);
-		}
+        return $this->jsonResponse([
+            'active' => true,
+            'scope' => trim(implode(' ', (array)$token->getClaim('scopes', []))),
+            'client_id' => intval($token->getClaim('aud')),
+            'username' => $user->email,
+            'token_type' => 'access_token',
+            'exp' => intval($token->getClaim('exp')),
+            'iat' => intval($token->getClaim('iat')),
+            'nbf' => intval($token->getClaim('nbf')),
+            'sub' => intval($token->getClaim('sub')),
+            'aud' => intval($token->getClaim('aud')),
+            'jti' => $token->getClaim('jti'),
+        ]);
 	}
 
 	/**
@@ -167,34 +161,4 @@ class IntrospectionController
 		return false;
 	}
 
-	/**
-	 * @param array $data
-	 * @param int $status
-	 *
-	 * @return \Illuminate\Http\JsonResponse
-	 */
-	private function errorResponse($data, $status = 400) : JsonResponse
-	{
-		return $this->jsonResponse($data, $status);
-	}
-
-	/**
-	 * returns an error
-	 *
-	 * @param \Exception $exception
-	 * @param int $status
-	 *
-	 * @return \Illuminate\Http\JsonResponse
-	 */
-	private function exceptionResponse(\Exception $exception, $status = 500) : JsonResponse
-	{
-		return $this->errorResponse([
-			'error' => [
-				'id' => str_slug(get_class($exception) . ' ' . $status),
-				'status' => $status,
-				'title' => $exception->getMessage(),
-				'detail' => $exception->getTraceAsString()
-			],
-		], $status);
-	}
 }
