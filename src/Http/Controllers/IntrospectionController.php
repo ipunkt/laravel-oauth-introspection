@@ -2,6 +2,7 @@
 
 namespace Ipunkt\Laravel\OAuthIntrospection\Http\Controllers;
 
+use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Http\JsonResponse;
 use Laravel\Passport\Bridge\AccessTokenRepository;
 use Laravel\Passport\ClientRepository;
@@ -37,6 +38,16 @@ class IntrospectionController
 	 */
 	private $clientRepository;
 
+    /**
+     * @var Illuminate\Contracts\Auth\UserProvider
+     */
+    private $userProvider;
+
+    /**
+     * @var string
+     */
+    protected $usernameProperty = 'email';
+
 	/**
 	 * constructing IntrospectionController
 	 *
@@ -44,18 +55,21 @@ class IntrospectionController
 	 * @param \League\OAuth2\Server\ResourceServer $resourceServer
 	 * @param \Laravel\Passport\Bridge\AccessTokenRepository $accessTokenRepository
 	 * @param \Laravel\Passport\ClientRepository
+     * @param \Illuminate\Contracts\Auth\UserProvider $userProvider
 	 */
 	public function __construct(
 		Parser $jwt,
 		ResourceServer $resourceServer,
 		AccessTokenRepository $accessTokenRepository,
-		ClientRepository $clientRepository
+		ClientRepository $clientRepository,
+        UserProvider $userProvider
 	)
 	{
 		$this->jwt = $jwt;
 		$this->resourceServer = $resourceServer;
 		$this->accessTokenRepository = $accessTokenRepository;
 		$this->clientRepository = $clientRepository;
+        $this->userProvider = $userProvider;
 	}
 
 	/**
@@ -89,15 +103,17 @@ class IntrospectionController
 				]);
 			}
 
-			/** @var string $userModel */
-			$userModel = config('auth.providers.users.model');
-			$user = (new $userModel)->findOrFail($token->getClaim('sub'));
+			# get user by token subject ID, from the UserProvider
+			$user = $this->userProvider->retrieveById($token->getClaim('sub'));
+            if( is_null($user) ) {
+                return $this->notActiveResponse();
+            }
 
 			return $this->jsonResponse([
 				'active' => true,
 				'scope' => trim(implode(' ', (array)$token->getClaim('scopes', []))),
 				'client_id' => intval($token->getClaim('aud')),
-				'username' => $user->email,
+				'username' => $user->{$this->usernameProperty} ?? null,
 				'token_type' => 'access_token',
 				'exp' => intval($token->getClaim('exp')),
 				'iat' => intval($token->getClaim('iat')),
