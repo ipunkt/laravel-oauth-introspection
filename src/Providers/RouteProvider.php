@@ -8,7 +8,7 @@ class RouteProvider extends RouteServiceProvider
 {
 	protected $packagePath = __DIR__ . '/../../';
 
-	protected $routesNamespace = '\Ipunkt\Laravel\OAuthIntrospection\Http\Controllers';
+	protected $routesNamespace = 'Ipunkt\Laravel\OAuthIntrospection\Http\Controllers';
 
 	protected $routesMiddleware = null;
 
