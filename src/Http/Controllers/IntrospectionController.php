@@ -3,6 +3,8 @@
 namespace Ipunkt\Laravel\OAuthIntrospection\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Laravel\Passport\Bridge\AccessTokenRepository;
 use Laravel\Passport\ClientRepository;
 use Laravel\Passport\Passport;
@@ -70,12 +72,12 @@ class IntrospectionController
 		try {
 			$this->resourceServer->validateAuthenticatedRequest($request);
 
-			if (array_get($request->getParsedBody(), 'token_type_hint', 'access_token') !== 'access_token') {
+			if (Arr::get($request->getParsedBody(), 'token_type_hint', 'access_token') !== 'access_token') {
 				//  unsupported introspection
 				return $this->notActiveResponse();
 			}
 
-			$accessToken = array_get($request->getParsedBody(), 'token');
+			$accessToken = Arr::get($request->getParsedBody(), 'token');
 			if ($accessToken === null) {
 				return $this->notActiveResponse();
 			}
@@ -91,19 +93,19 @@ class IntrospectionController
 
 			/** @var string $userModel */
 			$userModel = config('auth.providers.users.model');
-			$user = (new $userModel)->findOrFail($token->getClaim('sub'));
+			$user = (new $userModel)->find($token->getClaim('sub'));
 
 			return $this->jsonResponse([
 				'active' => true,
 				'scope' => trim(implode(' ', (array)$token->getClaim('scopes', []))),
-				'client_id' => intval($token->getClaim('aud')),
-				'username' => $user->email,
+				'client_id' => $token->getClaim('aud'),
+				'username' => optional($user)->email,
 				'token_type' => 'access_token',
 				'exp' => intval($token->getClaim('exp')),
 				'iat' => intval($token->getClaim('iat')),
 				'nbf' => intval($token->getClaim('nbf')),
-				'sub' => intval($token->getClaim('sub')),
-				'aud' => intval($token->getClaim('aud')),
+				'sub' => $token->getClaim('sub'),
+				'aud' => $token->getClaim('aud'),
 				'jti' => $token->getClaim('jti'),
 			]);
 		} catch (OAuthServerException $oAuthServerException) {
@@ -190,7 +192,7 @@ class IntrospectionController
 	{
 		return $this->errorResponse([
 			'error' => [
-				'id' => str_slug(get_class($exception) . ' ' . $status),
+				'id' => Str::slug(get_class($exception) . ' ' . $status),
 				'status' => $status,
 				'title' => $exception->getMessage(),
 				'detail' => $exception->getTraceAsString()
