@@ -1,5 +1,5 @@
 {
-	"name": "codewiser/laravel-oauth-introspection",
+	"name": "ipunkt/laravel-oauth-introspection",
 	"description": "OAuth 2.0 Token Introspection implementation for extending Laravel Passport (RFC 7662)",
 	"version": "2.0",
 	"keywords": [
