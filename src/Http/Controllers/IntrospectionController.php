@@ -93,13 +93,13 @@ class IntrospectionController
 
 			/** @var string $userModel */
 			$userModel = config('auth.providers.users.model');
-			$user = (new $userModel)->findOrFail($token->getClaim('sub'));
+			$user = (new $userModel)->find($token->getClaim('sub'));
 
 			return $this->jsonResponse([
 				'active' => true,
 				'scope' => trim(implode(' ', (array)$token->getClaim('scopes', []))),
-				'client_id' => intval($token->getClaim('aud')),
-				'username' => $user->email,
+				'client_id' => $token->getClaim('aud'),
+				'username' => optional($user)->email,
 				'token_type' => 'access_token',
 				'exp' => intval($token->getClaim('exp')),
 				'iat' => intval($token->getClaim('iat')),
