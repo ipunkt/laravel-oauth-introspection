@@ -104,8 +104,8 @@ class IntrospectionController
 				'exp' => intval($token->getClaim('exp')),
 				'iat' => intval($token->getClaim('iat')),
 				'nbf' => intval($token->getClaim('nbf')),
-				'sub' => intval($token->getClaim('sub')),
-				'aud' => intval($token->getClaim('aud')),
+				'sub' => $token->getClaim('sub'),
+				'aud' => $token->getClaim('aud'),
 				'jti' => $token->getClaim('jti'),
 			]);
 		} catch (OAuthServerException $oAuthServerException) {
