@@ -15,7 +15,7 @@ use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response as Psr7Response;
+use Laminas\Diactoros\Response as Psr7Response;
 
 class IntrospectionController
 {
